@@ -10,17 +10,26 @@ class PostImagesController < ApplicationController
     #保存するカラムの中身を操作することができる
     #current_user.idでログインユーザーのidを取得できる
     @post_image.user_id = current_user.id
-    @post_image.save
-    redirect_to post_images_path
+    
+    #バリデーションによって変える
+    if @post_image.save
+      redirect_to post_images_path
+    else
+      render :new
+    end 
+    
   end
   
     
   def index
-    @post_images = PostImage.all
+    #22 1ページ分の決められた数のデータだけを新しい順に取得する
+    @post_images = PostImage.page(params[:page])
   end
 
+#18 コメントを投稿するための変数を定義
   def show
     @post_image = PostImage.find(params[:id])
+    @post_comment = PostComment.new
   end
   
   def destroy
